@@ -3,10 +3,10 @@ import User from "../models/user";
 module.exports.register = async (req, res, next) => {
     // We create a new user uppon user request
     try {
-        let user = new User(req.body);
-        const savedUser = await user.save(); 
+        let tmpUser = new User(req.body);
+        const user = await tmpUser.save(); 
         const token = await user.generateAuthToken()
-        return res.status(200).send({ savedUser, token });
+        return res.status(201).send({ user, token });
     } catch (error) {
         return res.status(500).send(error);
     }

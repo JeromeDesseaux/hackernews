@@ -7,14 +7,22 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 require('dotenv').config(); 
 
-mongoose.connect(process.env.MONGODB_URL, {
+const env = process.env.NODE_ENV || "dev";
+
+const database = env == "test" ? process.env.TEST_DATABASE : process.env.DATABASE;
+const mongoString = process.env.MONGODB_URL + database;
+
+mongoose.connect(mongoString, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 });
 
 const app = express();
 
-app.use(logger('dev'));
+if(env == "dev"){
+    app.use(logger('dev'));
+}
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
