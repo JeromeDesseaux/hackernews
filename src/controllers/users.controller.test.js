@@ -25,14 +25,36 @@ describe("User registration", () => {
         expect(res.status).toBe(500);
         done()
     });
-    
-    // it('Gets the hackernews endpoint specifying the number of results', async (done) => {
-    //     // Sends GET Request to /test endpoint
-    //     const res = await request.get('/news/histoire?perPage=5')
-    //     expect(res.status).toBe(401);
-    //     // expect(res.body.hits.length).toBe(5);
-    //     done()
-    // });
+
+    it('Should return token on login', async (done) => {
+        const res = await request.post('/users/login').send({
+            username: "johntest",
+            password: "password"
+        });
+        expect(res.status).toBe(201);
+        expect(res.body.user).toBeDefined();
+        expect(res.body.token).toBeDefined();
+        done()
+    });
+
+    it('Should return error on wrong credentials login', async (done) => {
+        var res = await request.post('/users/login').send({
+            username: "johntestt",
+            password: "password"
+        });
+        expect(res.status).toBe(401);
+        var res = await request.post('/users/login').send({
+            username: "johntest",
+            password: "passwordd"
+        });
+        expect(res.status).toBe(401);
+        var res = await request.post('/users/login').send({
+            username: "johntestt",
+            password: "passwordd"
+        });
+        expect(res.status).toBe(401);
+        done()
+    });
 
     afterAll( async () =>{
         await User.deleteMany();
